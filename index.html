@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The $1,000 Cowork Masterclass — Distilled for Free</title>
+  <meta name="description" content="I spent $1,000 on a Claude Cowork course so you don't have to. Here's the 30% that actually matters — MCP setup, 12 automations, and the advanced prompt patterns nobody talks about." />
+  <style>
+    :root {
+      --bg:      #09090b;
+      --surface: #18181b;
+      --border:  #3f3f46;
+      --text:    #fafafa;
+      --text2:   #a1a1aa;
+      --accent:  #5B6FFF;
+      --lime:    #D8EC6A;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh;
+    }
+    #gate {
+      position: fixed; inset: 0; z-index: 1000; background: var(--bg);
+      display: flex; align-items: center; justify-content: center; padding: 24px;
+      transition: opacity 0.5s ease;
+    }
+    #gate.unlocking { opacity: 0; pointer-events: none; }
+    .gate-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+      padding: 40px 36px; max-width: 480px; width: 100%; text-align: center;
+    }
+    .gate-badge {
+      display: inline-block; background: rgba(91,111,255,0.15); color: var(--accent);
+      font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 100px; margin-bottom: 20px;
+    }
+    .gate-card h2 { font-size: 24px; font-weight: 700; line-height: 1.3; margin-bottom: 12px; }
+    .gate-card h2 span { color: var(--lime); }
+    .gate-card p { color: var(--text2); font-size: 15px; margin-bottom: 28px; }
+    .gate-bullets { list-style: none; text-align: left; margin-bottom: 28px; }
+    .gate-bullets li { display: flex; gap: 10px; font-size: 14px; color: var(--text2); margin-bottom: 10px; }
+    .gate-bullets li::before { content: ''; display: inline-block; width: 6px; height: 6px; background: var(--lime); border-radius: 50%; flex-shrink: 0; margin-top: 7px; }
+    .gate-form { display: flex; flex-direction: column; gap: 12px; }
+    .gate-form input[type="email"] {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+      padding: 12px 16px; color: var(--text); font-size: 15px; width: 100%;
+      outline: none; transition: border-color 0.2s;
+    }
+    .gate-form input[type="email"]:focus { border-color: var(--accent); }
+    .gate-form input[type="email"]::placeholder { color: var(--text2); }
+    .gate-form button {
+      background: var(--accent); color: #fff; border: none; border-radius: 8px;
+      padding: 13px 24px; font-size: 15px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+    }
+    .gate-form button:hover { opacity: 0.88; }
+    .gate-form button:disabled { opacity: 0.5; cursor: not-allowed; }
+    #gate-error { color: #f87171; font-size: 13px; margin-top: 6px; display: none; }
+    .gate-fine-print { margin-top: 14px; font-size: 12px; color: var(--text2); }
+    #content { display: none; }
+    header { border-bottom: 1px solid var(--border); padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-weight: 800; font-size: 18px; letter-spacing: -0.03em; }
+    .logo span { color: var(--lime); }
+    .header-cta { background: var(--accent); color: #fff; text-decoration: none; border-radius: 8px; padding: 9px 18px; font-size: 14px; font-weight: 600; transition: opacity 0.2s; }
+    .header-cta:hover { opacity: 0.88; }
+    main { max-width: 760px; margin: 0 auto; padding: 56px 24px 80px; }
+    .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+    h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 20px; }
+    h1 .highlight { color: var(--lime); }
+    .subhead { font-size: 18px; color: var(--text2); max-width: 600px; margin-bottom: 40px; line-height: 1.6; }
+    .stats { display: flex; gap: 32px; flex-wrap: wrap; margin-bottom: 56px; padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
+    .stat { display: flex; flex-direction: column; gap: 4px; }
+    .stat-num { font-size: 28px; font-weight: 800; color: var(--lime); }
+    .stat-label { font-size: 13px; color: var(--text2); }
+    .section { margin-bottom: 52px; }
+    .section h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.02em; }
+    .section > p, .section > .intro { color: var(--text2); font-size: 15px; margin-bottom: 24px; line-height: 1.7; }
+    .steps { display: flex; flex-direction: column; gap: 12px; }
+    .step { display: flex; gap: 16px; align-items: flex-start; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
+    .step-num { width: 30px; height: 30px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; color: #fff; }
+    .step-body h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .step-body p { font-size: 14px; color: var(--text2); line-height: 1.6; }
+    .prompt-block { background: #0d0d10; border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 8px; padding: 16px 18px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; color: #c4c4cc; line-height: 1.7; margin-top: 12px; white-space: pre-wrap; }
+    .automation-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 12px; }
+    .automation-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .automation-num { width: 28px; height: 28px; background: rgba(91,111,255,0.15); border: 1px solid var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--accent); flex-shrink: 0; }
+    .automation-title { font-size: 16px; font-weight: 700; }
+    .automation-subtitle { font-size: 13px; color: var(--text2); margin-bottom: 10px; }
+    .automation-card p { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 10px; }
+    .pattern-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px 24px; margin-bottom: 12px; }
+    .pattern-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    .pattern-desc { font-size: 14px; color: var(--text2); margin-bottom: 10px; line-height: 1.6; }
+    .checklist { display: flex; flex-direction: column; gap: 10px; }
+    .checklist-item { display: flex; gap: 14px; align-items: flex-start; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+    .check-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .check-body h4 { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+    .check-body p { font-size: 13px; color: var(--text2); line-height: 1.5; }
+    .callout { background: rgba(216,236,106,0.06); border: 1px solid rgba(216,236,106,0.2); border-radius: 12px; padding: 20px 24px; margin-bottom: 24px; }
+    .callout p { font-size: 14px; color: var(--text2); line-height: 1.7; }
+    .callout strong { color: var(--lime); }
+    .roi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    @media (max-width: 520px) { .roi-grid { grid-template-columns: 1fr; } }
+    .roi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
+    .roi-card .label { font-size: 12px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+    .roi-card .val { font-size: 22px; font-weight: 800; }
+    .roi-card .val.red { color: #f87171; }
+    .roi-card .val.green { color: var(--lime); }
+    .cta-section { background: linear-gradient(135deg, rgba(91,111,255,0.15), rgba(216,236,106,0.08)); border: 1px solid var(--border); border-radius: 16px; padding: 44px 36px; text-align: center; }
+    .cta-section h2 { font-size: 26px; font-weight: 800; margin-bottom: 12px; }
+    .cta-section p { color: var(--text2); font-size: 16px; margin-bottom: 28px; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .cta-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: #fff; text-decoration: none; border-radius: 10px; padding: 14px 28px; font-size: 16px; font-weight: 700; transition: opacity 0.2s, transform 0.15s; }
+    .cta-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    #float-cta { position: fixed; bottom: 24px; right: 24px; background: var(--accent); color: #fff; text-decoration: none; border-radius: 100px; padding: 12px 22px; font-size: 14px; font-weight: 600; box-shadow: 0 8px 32px rgba(91,111,255,0.35); opacity: 0; transform: translateY(12px); transition: opacity 0.3s, transform 0.3s; z-index: 50; }
+    #float-cta.visible { opacity: 1; transform: translateY(0); }
+    #float-cta:hover { opacity: 0.9; }
+    footer { border-top: 1px solid var(--border); padding: 24px; text-align: center; font-size: 13px; color: var(--text2); }
+    footer a { color: var(--text2); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-badge">Free Guide</div>
+    <h2>The <span>$1,000 Masterclass</span> — Distilled for Free</h2>
+    <p>I watched 8 hours of Cowork video so you don't have to. Drop your email and get the 30% that actually moves the needle.</p>
+    <ul class="gate-bullets">
+      <li>Complete MCP setup walkthrough (Slack, Notion, Gmail, Calendar)</li>
+      <li>12 copy-paste workflow automations with exact prompts</li>
+      <li>The "agent stack" architecture for running agents in parallel</li>
+      <li>Advanced prompt patterns specific to Cowork (not generic AI advice)</li>
+      <li>The 20-minute checklist to go from beginner to power user</li>
+    </ul>
+    <div class="gate-form" id="gate-form-wrapper">
+      <input type="email" id="gate-email" placeholder="your@email.com" required />
+      <button type="button" id="gate-btn">Get the Free Guide</button>
+      <span id="gate-error">Something went wrong — please try again.</span>
+    </div>
+    <p class="gate-fine-print">No spam. Unsubscribe anytime. By entering your email you're joining Alec's newsletter.</p>
+  </div>
+</div>
+
+<div id="content">
+  <header>
+    <div class="logo">Rally<span>Up</span></div>
+    <a href="https://calendar.app.google/SDA5TMRMbqbPQWEn7" target="_blank" class="header-cta">Book a Demo</a>
+  </header>
+  <main>
+    <p class="eyebrow">The Cowork Power User Guide</p>
+    <h1>I Spent <span class="highlight">$1,000</span> on a Cowork Masterclass. Here Are the Cliff Notes.</h1>
+    <p class="subhead">8 hours of video. About 30% was worth keeping. I pulled out every framework that actually moves the needle and put it here — so you can get it done in 20 minutes instead of 8 hours.</p>
+
+    <div class="stats">
+      <div class="stat"><span class="stat-num">$1k</span><span class="stat-label">course price paid</span></div>
+      <div class="stat"><span class="stat-num">8h</span><span class="stat-label">video distilled</span></div>
+      <div class="stat"><span class="stat-num">12</span><span class="stat-label">copy-paste automations</span></div>
+      <div class="stat"><span class="stat-num">20min</span><span class="stat-label">to implement this guide</span></div>
+    </div>
+
+    <div class="callout">
+      <p><strong>The uncomfortable truth:</strong> most people using Cowork are operating at maybe 10% of its capability. Not because it's complicated — because nobody showed them the advanced patterns. This guide fixes that.</p>
+    </div>
+
+    <div class="section">
+      <h2>Part 1: MCP Setup Walkthrough</h2>
+      <p class="intro">MCP (Model Context Protocol) is what separates casual Cowork users from power users. It connects Claude to your actual tools — Slack, Notion, Gmail, Calendar — so it can read and act on real data, not just respond to prompts. Here's the exact setup, step by step.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h3>Download Claude Desktop and Enable Cowork</h3>
+            <p>Go to <strong>claude.ai/download</strong>. Install the desktop app. In Settings, toggle on <strong>Cowork (beta)</strong>. This unlocks computer use and multi-step agentic runs — without this, you're just using a chat interface.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h3>Connect Gmail via MCP</h3>
+            <p>In Cowork Settings, go to <strong>Integrations</strong> and select Gmail. Click Connect and authorize via OAuth. Once connected, Cowork can read your inbox, search threads, and draft replies. Test it: type "what are my 3 most recent emails?" and it should respond with real data.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h3>Connect Slack via MCP</h3>
+            <p>Same flow — Integrations, then Slack, then OAuth. Grant channel read access. Cowork can now search messages, pull context from specific channels, and read threads. Test: "what was discussed in #general yesterday?" — if it returns real messages, you're connected.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h3>Connect Notion via MCP</h3>
+            <p>In Integrations, connect Notion. You'll need to authorize at the workspace level and select which pages Cowork can access. Give it access to your main workspace pages — it needs to be able to read and write to be useful. Test: "find my latest project notes in Notion."</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h3>Connect Google Calendar via MCP</h3>
+            <p>Connect Calendar the same way. Once live, Cowork can see your schedule, pull upcoming meetings, and use your availability as context for any task. Test: "what does my week look like?" — if it shows your real calendar, you're done.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">6</div>
+          <div class="step-body">
+            <h3>Verify Everything is Working</h3>
+            <p>Run this single prompt to confirm all 4 connections are live:</p>
+            <div class="prompt-block">give me a quick status check: what's in my inbox right now, what's on my calendar today, do i have any unread slack messages, and find my most recently edited notion page.</div>
+            <p style="margin-top:10px; font-size:13px; color:var(--text2);">If it returns real data from all 4 sources, your MCP stack is fully operational.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Part 2: 12 Copy-Paste Workflow Automations</h2>
+      <p class="intro">These are the exact automations from the course that save the most time. Each one is ready to use — copy the prompt, paste it into Cowork, and run it.</p>
+
+      <div class="automation-card">
+        <div class="automation-header"><div class="automation-num">01</div><div class="automation-title">Daily Morning Brief</div></div>
+        <div class="automation-subtitle">Saves 20-30 min every morning</div>
+        <div class="prompt-block">give me my morning brief. pull: (1) any urgent emails from the last 12 hours, (2) my meetings today with any context from past emails or slack, (3) any slack messages that need a response, (4) my top 3 priorities from notion. format it as a single scannable brief i can read in 2 minutes.</div>
+      </div>
+
+      <div class="automation-card">
+        <div class="automation-header"><div class="automation-num">02</div><div class="automation-title">Pre-Meeting Prep Brief</div></div>
+        <div class="automation-subtitle">Saves 45-60 min per important call</div>
+        <div class="prompt-block">prep me for my meeting with [Name] at [Company] in [X hours]. pull everything — our email history, any slack convos, their linkedin if you can find it, and what we last discussed. give me: 3 things to know, 3 questions to ask, and the one outcome i should leave with.</div>
+      </div>
+
+      <div class="automation-card">
+        <div class="automation-header"><div class="automation-num">03</div><div class="automation-title">Inbox Zero Sprint</div></div>
+        <div class="automation-subtitle">Clears 50+ emails in under 10 min</div>
+        <div class="prompt-block">run inbox zero on my last 48 hours of email. for each thread: categorize as action/fyi/delete, draft a reply for action items in my voice (direct, no fluff), and flag anything from investors or customers. show me a summary: X triaged, X drafted, X flagged.</div>
+      </div>
+
+      <div class="automation-card">
+        <div class="automation-header"><div class="automation-num">04</div><div class="automation-title">Weekly Content Plan</div></div>
+        <div class="automation-subtitle">Replaces 3-4 hours of content planning</div>
+        <div class="prompt-block">run my weekly linkedin content plan. find 5 trending topics in [your niche]. for each topic: write a full linkedin post in my voice, suggest a lead magnet angle, and rate its viral potential 1-10. upload everything to notion under "content queue" and give me a summary.</div>
+      </div>
+
+      <div class="automation-card">
+        <div class="automation-header"><div class="automation-num">05</div><div class="automation-title">Slack Thread Digest</div></div>
+        <div class="automation-subtitle">Never miss an important decision again</div>
+        <div class="prompt-block">scan my slack from the last 24 hours. find: (1) any decisions that were made without me, (2) questions directed at me i haven't answered, (3) anything that requires my input. give me a 10-bullet digest — most important first.</div>
+      </div>
+
+      <div class="automation-card">
+        <div class="automation-header"><div class="automation-num">06</div><div class="automation-title">Competitor Research Sprint</div></div>
+        <div class="automation-subtitle">12-page analysis in under 25 min</div>
+        <div class="prompt-block">research [Competitor] for me. i need: recent news and product updates, their pricing and positioning, what customers say about them (check g2 or twitter if possible), where they're weak, and 3 ways we can beat them. format it as an exec summary i can share with my team.</div>
+      </div>
+
+      <div class="automation-card">
+        <div class="automation-header"><div class="automation-num">07</div><div class="automation-title">Monthly Investor Update</div></div>
+        <div class="automation-subtitle">Replaces 3-4 hours of monthly writing</div>
+        <div class="prompt-block">write my monthly investor update for [Month]. pull my key metrics from notion, check gmail for any investor threads, and look at what we shipped this month. write the full update in my voice: highlights, key metrics, challenges, what's next, and any asks. keep it under 400 words.</div>
+      </div>
+
+      <div class="automation-card">
+        <div class="automation-header"><div class="automation-num">08</div><div class="automation-title">Sales Lead Scoring</div></div>
+        <div class="automation-subtitle">Score and prioritize your entire pipeline</div>
+        <div class="prompt-block">score my inbound leads from the last 7 days. pull from gmail and notion crm. for each lead score 1-10 based on: company size, job title, stated problem, and budget signals. for everyone 7+, draft a personalized follow-up that references their specific situation. show me the ranked list.</div>
+      </div>
+
+      <div class="automation-card">
+        <div class="automation-header"><div class="automation-num">09</div><div class="automation-title">Meeting Notes to Action Items</div></div>
+        <div class="automation-subtitle">Turn any transcript into a clean action list</div>
+        <div class="prompt-block">here are my notes from today's meeting with [Name/Team]: [paste notes]. extract: (1) all decisions made, (2) all action items with owners and deadlines, (3) open questions that need answers. format as a clean follow-up i can send to everyone in the meeting within the next 5 minutes.</div>
+      </div>
+
+      <div class="automation-card">
+        <div class="automation-header"><div class="automation-num">10</div><div class="automation-title">Weekly Ops Review</div></div>
+        <div class="automation-subtitle">Catch billing errors and operational drift</div>
+        <div class="prompt-block">run my weekly ops review. scan emails and notion for new invoices or charges. flag any duplicates, unexpected increases, or charges over $200 that weren't in last month. categorize all expenses by type. give me: total spend this week, flagged items, and recommended actions.</div>
+      </div>
+
+      <div class="automation-card">
+        <div class="automation-header"><div class="automation-num">11</div><div class="automation-title">Newsletter Draft from Week's Activity</div></div>
+        <div class="automation-subtitle">Write your newsletter in under 5 minutes</div>
+        <div class="prompt-block">write my weekly newsletter draft. pull from: my slack messages this week, any linkedin posts i wrote, emails i sent, and my notion notes. find the most interesting thing that happened or that i learned this week and turn it into a 300-word newsletter section in my voice. conversational, not corporate.</div>
+      </div>
+
+      <div class="automation-card">
+        <div class="automation-header"><div class="automation-num">12</div><div class="automation-title">End-of-Day Shutdown Routine</div></div>
+        <div class="automation-subtitle">Close the day in 5 minutes flat</div>
+        <div class="prompt-block">run my end-of-day shutdown. check: (1) any emails that came in after 3pm that need a same-day reply, (2) any slack messages i left on read that need a response, (3) did i complete what i planned in notion today? give me a 5-bullet close-out summary and update my notion priorities for tomorrow.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Part 3: The Agent Stack Architecture</h2>
+      <p class="intro">The biggest unlock from the course: Cowork is not a single AI assistant — it's a coordination layer. Once you understand agent stacking, you go from 1x output to 5x output without doing any more work yourself.</p>
+
+      <div class="callout">
+        <p><strong>The core insight:</strong> instead of one big prompt that tries to do everything, you chain smaller agents that each do one thing well — and pass their output to the next agent. Think of it like an assembly line, not a single worker.</p>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h3>The Trigger Agent (Input Layer)</h3>
+            <p>The first agent in any stack is a "trigger" — it gathers raw data from your tools (Gmail, Slack, Notion, Calendar) and outputs a structured summary. It does nothing else. This agent is always simple: "pull X from Y and format it as Z."</p>
+            <div class="prompt-block">trigger agent example:
+pull all new inbound leads from gmail and notion from the last 7 days.
+output as a clean JSON list: name, company, email, stated problem, date received.
+do nothing else. do not score or respond — just collect and format.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h3>The Processing Agent (Middle Layer)</h3>
+            <p>The second agent takes the trigger's output and does the actual thinking — scoring, categorizing, analyzing, or writing. It receives structured input and outputs structured results. Never give it raw, unformatted data.</p>
+            <div class="prompt-block">processing agent example:
+here is my lead list: [paste trigger agent output]
+score each lead 1-10 based on: company size, title seniority, problem fit, budget signals.
+output: same list with a score, a 1-sentence rationale, and a priority tier (hot/warm/cold).</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h3>The Output Agent (Action Layer)</h3>
+            <p>The final agent takes the processed results and creates deliverables — emails, documents, Notion updates, or Slack messages. It only receives clean, scored data. This is the agent that "does" things in the world.</p>
+            <div class="prompt-block">output agent example:
+here are my hot leads: [paste scored list, hot tier only]
+for each one, draft a personalized outreach email.
+reference their specific company and problem. no templates. no "I hope this finds you well."
+output: one draft per lead, ready to send.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h3>Running Agents in Parallel</h3>
+            <p>Once you've built individual agent chains, you can run multiple stacks at the same time in separate Cowork windows. While your lead scoring stack runs in window 1, your content stack runs in window 2, and your inbox triage runs in window 3. You're not waiting — you're reviewing outputs while the next batch processes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Part 4: Advanced Prompt Patterns</h2>
+      <p class="intro">These are the prompt engineering patterns specific to Cowork that the course spent the most time on. Generic ChatGPT advice doesn't apply here — Cowork has computer use and tool access, which changes how you should prompt it.</p>
+
+      <div class="pattern-card">
+        <div class="pattern-title">Pattern 1: Context Injection</div>
+        <div class="pattern-desc">Always tell Cowork who you are and what your business does at the start of complex tasks. It doesn't retain memory between sessions by default. Without this, it gives generic answers.</div>
+        <div class="prompt-block">context: i'm [Name], [role] at [Company]. we sell [product] to [ICP]. my communication style is [direct/formal/casual]. my top priority this week is [X].
+
+with that context, [your actual task here].</div>
+      </div>
+
+      <div class="pattern-card">
+        <div class="pattern-title">Pattern 2: Output Format Specification</div>
+        <div class="pattern-desc">Cowork defaults to long, paragraphed responses. If you want scannable output — bullets, tables, or specific formats — you have to specify it explicitly every time.</div>
+        <div class="prompt-block">format your output as:
+- a 3-bullet executive summary at the top
+- then a table with columns: [column 1] | [column 2] | [column 3]
+- then any action items as a numbered list
+- no paragraphs. no preamble. start directly with the summary.</div>
+      </div>
+
+      <div class="pattern-card">
+        <div class="pattern-title">Pattern 3: The Constraint Frame</div>
+        <div class="pattern-desc">Cowork's biggest failure mode is doing too much when you want it to do one specific thing. Constraints prevent scope creep and keep outputs focused.</div>
+        <div class="prompt-block">constraints for this task:
+- only use data from the last 7 days
+- do not make assumptions — if you're unsure, flag it and ask
+- output maximum 5 items, prioritized by importance
+- do not write more than 2 sentences per item</div>
+      </div>
+
+      <div class="pattern-card">
+        <div class="pattern-title">Pattern 4: The Voice Lock</div>
+        <div class="pattern-desc">When Cowork writes anything on your behalf (emails, posts, updates), give it 3 examples of your actual writing first. This locks in your voice and eliminates the "AI-generated" smell.</div>
+        <div class="prompt-block">here are 3 examples of how i actually write:
+
+example 1: [paste a real email or message you wrote]
+example 2: [paste another]
+example 3: [paste another]
+
+study these. now write [your actual task] in the exact same voice. same tone, same sentence length, same level of formality.</div>
+      </div>
+
+      <div class="pattern-card">
+        <div class="pattern-title">Pattern 5: The File System Trick</div>
+        <div class="pattern-desc">Cowork with computer use can read files directly from your machine. Store your most important context (ICP definition, company one-pager, voice guide) as .txt files on your Desktop. Then reference them directly in prompts instead of copy-pasting every time.</div>
+        <div class="prompt-block">read the file at ~/Desktop/company-context.txt and use it as background context for everything in this session. do not summarize it back to me — just use it silently to inform every response.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Part 5: The 20-Minute Setup Checklist</h2>
+      <p class="intro">Go from zero to operational in 20 minutes. Do these in order — each step builds on the last.</p>
+      <div class="checklist">
+        <div class="checklist-item">
+          <div class="check-icon">⬜</div>
+          <div class="check-body"><h4>Minutes 0-3: Install and enable</h4><p>Download Claude Desktop, sign in, toggle on Cowork mode in Settings.</p></div>
+        </div>
+        <div class="checklist-item">
+          <div class="check-icon">⬜</div>
+          <div class="check-body"><h4>Minutes 3-8: Connect your 4 tools</h4><p>Gmail, Slack, Notion, Google Calendar — one OAuth each. Takes about 90 seconds per tool.</p></div>
+        </div>
+        <div class="checklist-item">
+          <div class="check-icon">⬜</div>
+          <div class="check-body"><h4>Minute 8-9: Run the connection test</h4><p>Use the verification prompt from Part 1. Confirm all 4 data sources return real data.</p></div>
+        </div>
+        <div class="checklist-item">
+          <div class="check-icon">⬜</div>
+          <div class="check-body"><h4>Minutes 9-11: Create your context file</h4><p>Make a .txt file on your Desktop called "company-context.txt". Add: your name, role, company, ICP, and communication style. You'll reference this in every session.</p></div>
+        </div>
+        <div class="checklist-item">
+          <div class="check-icon">⬜</div>
+          <div class="check-body"><h4>Minutes 11-14: Run your first real automation</h4><p>Pick automation #01 (Morning Brief) from Part 2. Run it. See real output from your actual tools.</p></div>
+        </div>
+        <div class="checklist-item">
+          <div class="check-icon">⬜</div>
+          <div class="check-body"><h4>Minutes 14-17: Build your first agent chain</h4><p>Take any task you do weekly and break it into a 3-agent stack (Trigger / Process / Output) using the framework from Part 3.</p></div>
+        </div>
+        <div class="checklist-item">
+          <div class="check-icon">⬜</div>
+          <div class="check-body"><h4>Minutes 17-20: Save your top 3 prompts</h4><p>Copy the 3 automations from Part 2 that apply most to your work. Paste them into a Notion page called "Cowork Prompts." You'll use these every week.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>What the Course Cost vs. What It's Worth</h2>
+      <div class="roi-grid">
+        <div class="roi-card"><div class="label">Course price paid</div><div class="val red">$1,000</div></div>
+        <div class="roi-card"><div class="label">Content worth keeping (est.)</div><div class="val red">~30%</div></div>
+        <div class="roi-card"><div class="label">Hours of video to watch</div><div class="val red">8 hours</div></div>
+        <div class="roi-card"><div class="label">Time to implement this guide</div><div class="val green">20 minutes</div></div>
+      </div>
+    </div>
+
+    <div class="cta-section">
+      <h2>Your Team Should Be on LinkedIn.<br>RallyUp Makes It Automatic.</h2>
+      <p>RallyUp is the SaaS that gets your whole team posting on LinkedIn — consistently, in their own voice, without anyone opening a blank doc. One platform. Your entire company building pipeline from content.</p>
+      <a href="https://calendar.app.google/SDA5TMRMbqbPQWEn7" target="_blank" class="cta-btn">Book a Free Call with Alec →</a>
+    </div>
+  </main>
+  <footer><p>Built by <a href="https://rallyup.team" target="_blank">RallyUp</a></p></footer>
+</div>
+
+<a href="https://calendar.app.google/SDA5TMRMbqbPQWEn7" target="_blank" id="float-cta">Book a Free Call</a>
+
+<script>
+  const LS_KEY  = 'rallyup_lm_cowork_setup';
+  const gate    = document.getElementById('gate');
+  const content = document.getElementById('content');
+
+  function unlock() {
+    gate.classList.add('unlocking');
+    setTimeout(() => { gate.style.display = 'none'; content.style.display = 'block'; }, 500);
+  }
+
+  if (localStorage.getItem(LS_KEY)) { gate.style.display = 'none'; content.style.display = 'block'; }
+
+  const btn   = document.getElementById('gate-btn');
+  const input = document.getElementById('gate-email');
+  const err   = document.getElementById('gate-error');
+
+  btn.addEventListener('click', async function() {
+    const email = input.value.trim();
+    if (!email || !email.includes('@')) {
+      err.textContent = 'Please enter a valid email address.';
+      err.style.display = 'block';
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Unlocking...';
+    err.style.display = 'none';
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      if (res.ok) { localStorage.setItem(LS_KEY, '1'); unlock(); }
+      else { const data = await res.json().catch(() => ({})); throw new Error(data.error || 'Subscribe failed'); }
+    } catch(ex) {
+      console.warn('Subscribe error:', ex);
+      err.textContent = 'Something went wrong — please try again.';
+      err.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Get the Free Guide';
+    }
+  });
+
+  const floatBtn = document.getElementById('float-cta');
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+    if (scrolled > 0.45) floatBtn.classList.add('visible');
+    else floatBtn.classList.remove('visible');
+  });
+</script>
+</body>
+</html>
